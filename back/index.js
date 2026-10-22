@@ -37,38 +37,55 @@ app.use(
 ); 
 
 app.use(cookieParser());
-app.use(cors({
-  origin: process.env.APPLICATION_URL || "http://localhost:5173",
-  credentials: true
-}));
+
+const corsOrigins = [
+  process.env.APPLICATION_URL || "http://localhost:5173",
+  ...(process.env.CORS_ORIGINS?.split(",").map((o) => o.trim()).filter(Boolean) ?? []),
+];
+
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin || corsOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+      callback(new Error("Not allowed by CORS"));
+    },
+    credentials: true,
+  })
+);
 
 app.use('/api/v1', routes);
 
-app.use('api/v1/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
 const csrfProtection = csurf({ cookie: true });
 
+// Optionnel : exposer le token CSRF pour le frontend
+app.get("/api/v1/csrf-token", csrfProtection, (req, res) => {
+  res.json({ csrfToken: req.csrfToken() });
+});
 
-// Optionnel : exposer le token CSRF pour le frontend 
-app.get('/api/v1/csrf-token', csrfProtection, (req, res) => { 
-    res.json({ csrfToken: req.csrfToken() });
-}); 
-
-// Swagger docs
-app.use('/api/v1/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-// HTTPS server avec tes certificats 
-const privateKey = fs.readFileSync('./config/dsp-dev-o24a-g4.fr_private_key.key', 'utf8');
-const certificate = fs.readFileSync('./config/dsp-dev-o24a-g4.fr_ssl_certificate.pem', 'utf8');
-const credentials = { key: privateKey, cert: certificate };
-const httpsServer = https.createServer(credentials, app); 
+app.use("/api/v1/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 const PORT = process.env.PORT || 3000;
+const HOST = process.env.HOST || "0.0.0.0";
+const USE_HTTPS = process.env.USE_HTTPS === "true";
 
-// httpsServer.listen(PORT, () => { 
-//     console.log(`Secure app is running on port ${PORT}`);
-//  });
-
-app.listen(PORT, () => {
-    console.log(`App is running on port ${PORT}`);
-});
+if (USE_HTTPS) {
+  const privateKey = fs.readFileSync(
+    "./config/dsp-dev-o24a-g4.fr_private_key.key",
+    "utf8"
+  );
+  const certificate = fs.readFileSync(
+    "./config/dsp-dev-o24a-g4.fr_ssl_certificate.pem",
+    "utf8"
+  );
+  const credentials = { key: privateKey, cert: certificate };
+  https.createServer(credentials, app).listen(PORT, HOST, () => {
+    console.log(`Secure HTTPS server running on ${HOST}:${PORT}`);
+  });
+} else {
+  app.listen(PORT, HOST, () => {
+    console.log(`App server running on ${HOST}:${PORT}`);
+  });
+}

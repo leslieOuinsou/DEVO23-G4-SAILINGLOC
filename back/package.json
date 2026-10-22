@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest",
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "migrate:prod": "NODE_ENV=production sequelize-cli db:migrate"
   },
   "keywords": [],
   "author": "",
