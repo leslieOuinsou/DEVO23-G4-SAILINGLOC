@@ -35,7 +35,7 @@ export const request = async (endpoint, options = {}) => {
   const method = options.method || 'GET';
 
   // Récupération du token CSRF
-  if (['POST', 'PUT', 'DELETE'].includes(method.toUpperCase()) && !csrfToken) {
+  if (['POST', 'PUT', 'DELETE'].includes(method.toUpperCase()) ) {
     await getCsrfToken();
   }
 

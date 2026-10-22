@@ -28,7 +28,7 @@ const sendEmail = async (to, subject, html) => {
 }
 
 export const sendConfirmationEmail = async (username, email, token) => {
-  sendEmail(
+  await sendEmail(
     email,
     "Confirmation de votre compte SailingLoc",
     confirmationEmailHtml(username, `${APPLICATION_URL}/confirmation/${token}`)
@@ -36,7 +36,7 @@ export const sendConfirmationEmail = async (username, email, token) => {
 }
 
 export const sendResetPasswordEmail = async (username, email, token) => {
-  sendEmail(
+  await sendEmail(
     email,
     "Réinitialisation de votre mot de passe SailingLoc",
     resetPasswordEmailHtml(username, `${APPLICATION_URL}/reset-password/${token}`)

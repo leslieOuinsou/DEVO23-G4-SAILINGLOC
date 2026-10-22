@@ -8,7 +8,7 @@ import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import https from "https";
 import fs from "fs";
-import csurf from 'csurf';
+import { csrfProtection } from "./middlewares/csrf.js";
 
 import swaggerJSDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
@@ -17,6 +17,7 @@ import swaggerSpec from './config/swagger.js';
 import routes from './routes/routes.js';
 
 const app = express();
+app.set("trust proxy", 1);
 app.use(express.json());
 
 app.use(fileUpload());
@@ -57,8 +58,6 @@ app.use(
 );
 
 app.use('/api/v1', routes);
-
-const csrfProtection = csurf({ cookie: true });
 
 // Optionnel : exposer le token CSRF pour le frontend
 app.get("/api/v1/csrf-token", csrfProtection, (req, res) => {

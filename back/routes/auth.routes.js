@@ -3,11 +3,10 @@ import authController from "../controllers/auth.controller.js";
 import { validateLogin, validateRegister, validateChangePassword, validateForgotPassword, validateResetPassword } from "../validators/auth.validator.js";
 import { validate } from "../middlewares/validate.js";
 import { isAuthenticated } from "../middlewares/auth/authorize.js";
-import csurf from "csurf";
+import { csrfProtection } from "../middlewares/csrf.js";
 
 const router = express.Router();
 
-const csrfProtection = csurf({ cookie: true });
 
 /**
  * @swagger
