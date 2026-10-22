@@ -4,7 +4,16 @@ import Stripe from "stripe";
 import dotenv from 'dotenv';
 dotenv.config();
 
-const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+let stripeClient;
+const getStripe = () => {
+  if (!process.env.STRIPE_SECRET_KEY) {
+    throw new Error('STRIPE_SECRET_KEY is not configured');
+  }
+  if (!stripeClient) {
+    stripeClient = Stripe(process.env.STRIPE_SECRET_KEY);
+  }
+  return stripeClient;
+};
 
 const getAllPayments = async () => {
     return await Payment.findAll({
@@ -43,7 +52,7 @@ const getReservationPayments = async (reservationId) => {
 };
 
 const createIntent = async (amount) => {
-  const paymentIntent = await stripe.paymentIntents.create({
+  const paymentIntent = await getStripe().paymentIntents.create({
     amount,
     currency: "eur",
   });
