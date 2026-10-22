@@ -1,0 +1,9 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "devo23-g4-sailingloc",
+  "compatibility_date": "2026-10-19",
+  "assets": {
+    "directory": "front/dist",
+    "not_found_handling": "single-page-application"
+  }
+}

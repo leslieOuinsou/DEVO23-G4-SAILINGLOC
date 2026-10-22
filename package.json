@@ -1,0 +1,6 @@
+{
+  "private": true,
+  "scripts": {
+    "build:pages": "npm run build:pages --prefix front"
+  }
+}
