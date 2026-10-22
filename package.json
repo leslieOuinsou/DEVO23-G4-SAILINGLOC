@@ -1,6 +1,10 @@
 {
   "private": true,
   "scripts": {
-    "build:pages": "npm run build:pages --prefix front"
+    "build:pages": "npm run build:pages --prefix front",
+    "deploy:worker": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.151.3"
   }
 }

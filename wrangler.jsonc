@@ -1,6 +1,7 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "devo23-g4-sailingloc",
+  "name": "sailingloc-web-leslie",
+  "workers_dev": true,
   "compatibility_date": "2026-10-19",
   "assets": {
     "directory": "front/dist",
